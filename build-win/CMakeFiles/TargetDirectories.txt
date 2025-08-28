@@ -1,0 +1,4 @@
+C:/Users/root/Desktop/sherlock/build-win/CMakeFiles/FileEncryptionDemo.dir
+C:/Users/root/Desktop/sherlock/build-win/CMakeFiles/INSTALL.dir
+C:/Users/root/Desktop/sherlock/build-win/CMakeFiles/ALL_BUILD.dir
+C:/Users/root/Desktop/sherlock/build-win/CMakeFiles/ZERO_CHECK.dir

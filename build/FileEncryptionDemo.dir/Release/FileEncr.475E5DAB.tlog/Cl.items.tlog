@@ -1,0 +1,9 @@
+C:\Users\root\Desktop\sherlock\src\main.cpp;C:\Users\root\Desktop\sherlock\build\FileEncryptionDemo.dir\Release\main.obj
+C:\Users\root\Desktop\sherlock\src\core\encryption_service.cpp;C:\Users\root\Desktop\sherlock\build\FileEncryptionDemo.dir\Release\encryption_service.obj
+C:\Users\root\Desktop\sherlock\src\core\file_manager.cpp;C:\Users\root\Desktop\sherlock\build\FileEncryptionDemo.dir\Release\file_manager.obj
+C:\Users\root\Desktop\sherlock\src\crypto\aes_crypto.cpp;C:\Users\root\Desktop\sherlock\build\FileEncryptionDemo.dir\Release\aes_crypto.obj
+C:\Users\root\Desktop\sherlock\src\crypto\key_manager.cpp;C:\Users\root\Desktop\sherlock\build\FileEncryptionDemo.dir\Release\key_manager.obj
+C:\Users\root\Desktop\sherlock\src\ui\main_window.cpp;C:\Users\root\Desktop\sherlock\build\FileEncryptionDemo.dir\Release\main_window.obj
+C:\Users\root\Desktop\sherlock\src\ui\encryption_dialog.cpp;C:\Users\root\Desktop\sherlock\build\FileEncryptionDemo.dir\Release\encryption_dialog.obj
+C:\Users\root\Desktop\sherlock\src\utils\logger.cpp;C:\Users\root\Desktop\sherlock\build\FileEncryptionDemo.dir\Release\logger.obj
+C:\Users\root\Desktop\sherlock\src\utils\file_utils.cpp;C:\Users\root\Desktop\sherlock\build\FileEncryptionDemo.dir\Release\file_utils.obj

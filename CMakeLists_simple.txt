@@ -1,0 +1,79 @@
+cmake_minimum_required(VERSION 3.15)
+project(FileEncryptionDemoSimple)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+
+option(USE_OPENSSL "Use OpenSSL for cryptography" ON)
+
+
+if(WIN32)
+    add_definitions(-DWIN32_LEAN_AND_MEAN)
+    add_definitions(-DUNICODE)
+    add_definitions(-D_UNICODE)
+endif()
+
+
+if(USE_OPENSSL)
+    find_package(OpenSSL REQUIRED)
+    add_definitions(-DUSE_OPENSSL)
+    message(STATUS "OpenSSL найден: ${OPENSSL_VERSION}")
+endif()
+
+
+set(SOURCES_SIMPLE
+    main_simple.cpp
+    src/crypto/aes_crypto.cpp
+)
+
+
+add_executable(${PROJECT_NAME} ${SOURCES_SIMPLE})
+
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+    src/
+    src/crypto/
+)
+
+
+if(USE_OPENSSL)
+    target_link_libraries(${PROJECT_NAME} PRIVATE OpenSSL::SSL OpenSSL::Crypto)
+else()
+    if(WIN32)
+        target_link_libraries(${PROJECT_NAME} PRIVATE bcrypt)
+    endif()
+endif()
+
+
+if(WIN32)
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+        user32
+        gdi32
+        comctl32
+        comdlg32
+        shell32
+        advapi32
+        crypt32
+    )
+endif()
+
+
+install(TARGETS ${PROJECT_NAME}
+    RUNTIME DESTINATION bin
+)
+
+
+install(FILES README.md
+    DESTINATION share/${PROJECT_NAME}
+)
+
+
+message(STATUS "Проект: ${PROJECT_NAME}")
+message(STATUS "C++ стандарт: ${CMAKE_CXX_STANDARD}")
+message(STATUS "OpenSSL: ${USE_OPENSSL}")
+if(USE_OPENSSL)
+    message(STATUS "OpenSSL версия: ${OPENSSL_VERSION}")
+    message(STATUS "OpenSSL библиотеки: ${OPENSSL_LIBRARIES}")
+    message(STATUS "OpenSSL заголовки: ${OPENSSL_INCLUDE_DIR}")
+endif()
