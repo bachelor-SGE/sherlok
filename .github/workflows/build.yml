@@ -10,54 +10,107 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Clean old caches
+        run: |
+          rm -rf build build-win build-portable out || true
       - name: Install deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake build-essential libssl-dev libx11-dev
+          sudo apt-get install -y cmake build-essential pkg-config libssl-dev libx11-dev libxext-dev
       - name: Configure
-        run: cmake -S . -B build -DUSE_OPENSSL=ON
+        env:
+          BUILD_DIR: ${{ runner.temp }}/build-linux
+        run: |
+          cmake -S "$GITHUB_WORKSPACE" -B "$BUILD_DIR" -DCMAKE_BUILD_TYPE=Release -DUSE_OPENSSL=ON
       - name: Build
-        run: cmake --build build -j
+        env:
+          BUILD_DIR: ${{ runner.temp }}/build-linux
+        run: cmake --build "$BUILD_DIR" -j
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: FileEncryptionDemo-linux
-          path: build/FileEncryptionDemo
+          path: ${{ runner.temp }}/build-linux/FileEncryptionDemo
+      - name: Upload build logs (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs-linux
+          path: |
+            ${{ runner.temp }}/build-linux/CMakeFiles/CMakeOutput.log
+            ${{ runner.temp }}/build-linux/CMakeFiles/CMakeError.log
 
   build-macos:
     runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Clean old caches
+        run: |
+          rm -rf build build-win build-portable out || true
       - name: Install OpenSSL
         run: |
           brew update
-          brew install openssl
+          brew install openssl@3 || true
+          brew link --force openssl@3 || true
       - name: Configure
+        env:
+          BUILD_DIR: ${{ runner.temp }}/build-macos
         run: |
-          OPENSSL_ROOT=$(brew --prefix openssl)
-          cmake -S . -B build -DOPENSSL_ROOT_DIR="$OPENSSL_ROOT"
+          OPENSSL_ROOT=$(brew --prefix openssl@3)
+          cmake -S "$GITHUB_WORKSPACE" -B "$BUILD_DIR" \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DOPENSSL_ROOT_DIR="$OPENSSL_ROOT" \
+            -DOPENSSL_INCLUDE_DIR="$OPENSSL_ROOT/include" \
+            -DOPENSSL_CRYPTO_LIBRARY="$OPENSSL_ROOT/lib/libcrypto.dylib" \
+            -DOPENSSL_SSL_LIBRARY="$OPENSSL_ROOT/lib/libssl.dylib" \
+            -DCMAKE_CXX_STANDARD=17
       - name: Build
-        run: cmake --build build -j
+        env:
+          BUILD_DIR: ${{ runner.temp }}/build-macos
+        run: cmake --build "$BUILD_DIR" -j
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: FileEncryptionDemo-macos
-          path: build/FileEncryptionDemo
+          path: ${{ runner.temp }}/build-macos/FileEncryptionDemo
+      - name: Upload build logs (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs-macos
+          path: |
+            ${{ runner.temp }}/build-macos/CMakeFiles/CMakeOutput.log
+            ${{ runner.temp }}/build-macos/CMakeFiles/CMakeError.log
 
   build-windows:
     runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Clean old caches
+        shell: pwsh
+        run: |
+          if (Test-Path build) { Remove-Item build -Recurse -Force }
+          if (Test-Path build-portable) { Remove-Item build-portable -Recurse -Force }
+          if (Test-Path out) { Remove-Item out -Recurse -Force }
+          if (Test-Path build-ci-win) { Remove-Item build-ci-win -Recurse -Force }
       - name: Configure
-        run: cmake -S . -B build-win -G "Visual Studio 17 2022" -A x64 -DUSE_OPENSSL=OFF
+        run: cmake -S . -B build-ci-win -G "Visual Studio 17 2022" -A x64 -DUSE_OPENSSL=OFF -DCMAKE_BUILD_TYPE=Release
       - name: Build
-        run: cmake --build build-win --config Release
+        run: cmake --build build-ci-win --config Release
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: FileEncryptionDemo-windows
-          path: build-win/Release/FileEncryptionDemo.exe
+          path: build-ci-win/Release/FileEncryptionDemo.exe
+      - name: Upload build logs (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs-windows
+          path: |
+            build-ci-win/CMakeFiles/CMakeOutput.log
+            build-ci-win/CMakeFiles/CMakeError.log
 
 

@@ -1,4 +1,0 @@
-C:/Users/root/Desktop/sherlock/build-portable/CMakeFiles/FileEncryptionDemo.dir
-C:/Users/root/Desktop/sherlock/build-portable/CMakeFiles/INSTALL.dir
-C:/Users/root/Desktop/sherlock/build-portable/CMakeFiles/ALL_BUILD.dir
-C:/Users/root/Desktop/sherlock/build-portable/CMakeFiles/ZERO_CHECK.dir

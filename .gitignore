@@ -1,0 +1,23 @@
+# Build artifacts
+build/
+build-*/
+build-win/
+build-portable/
+out/
+
+# IDE
+.vs/
+.vscode/
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+*.recipe
+*.tlog/
+*.lastbuildstate
+
+# OS
+.DS_Store
+Thumbs.db
+
